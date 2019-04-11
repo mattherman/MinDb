@@ -1,4 +1,5 @@
 ﻿using System;
+using MinDb.Core;
 
 namespace MinDb.Repl
 {
@@ -6,7 +7,21 @@ namespace MinDb.Repl
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var input = "";
+
+            var db = new Database("min.db");
+
+            while (true)
+            {
+                Console.Write("db > ");
+                input = Console.ReadLine();
+
+                if (string.Compare(input, ":q", true) == 0) break;
+
+                var result = db.Execute(input);
+
+                Console.WriteLine(result);
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MinDb.Compiler
 {
-    public class Class1
+    public class Lexer
     {
     }
 }
