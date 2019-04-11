@@ -15,7 +15,7 @@ namespace MinDb.Repl
             {
                 Console.Write("db > ");
                 input = Console.ReadLine();
-
+                //input = "";
                 if (string.Compare(input, ":q", true) == 0) break;
 
                 var result = db.Execute(input);
