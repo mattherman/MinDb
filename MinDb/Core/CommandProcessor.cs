@@ -12,6 +12,10 @@ internal static class CommandProcessor
         Console.WriteLine($"[DEBUG] {string.Join(string.Empty, tokens.Select(t => t.Value))}");
 
         var parser = new Parser(tokens);
-        return parser.Parse();
+        var queryModel = parser.Parse();
+
+        Console.WriteLine($"[DEBUG] Table = {queryModel.TargetTable}, Columns = [{string.Join(",", queryModel.TargetColumns)}]");
+
+        return queryModel;
     }
 }

@@ -7,21 +7,32 @@ namespace MinDb.Repl
     {
         static void Main(string[] args)
         {
-            var input = "";
-
             var db = new Database("min.db");
 
-            while (true)
+            if (args.Length > 0)
             {
-                Console.Write("db > ");
-                //input = Console.ReadLine();
-                input = "Select FirstName, LastName, Age";
-                if (string.Compare(input, ":q", true) == 0) break;
-
-                var result = db.Execute(input);
-
-                Console.WriteLine(result);
+                ExecuteQuery(db, args[0]);
             }
+            else
+            {
+                while (true)
+                {
+                    var input = "";
+
+                    Console.Write("db > ");
+                    input = Console.ReadLine();
+
+                    if (string.Compare(input, ":q", true) == 0) break;
+
+                    ExecuteQuery(db, input);
+                }
+            }
+        }
+
+        static void ExecuteQuery(Database db, string input)
+        {
+            var result = db.Execute(input);
+            Console.WriteLine(result);
         }
     }
 }

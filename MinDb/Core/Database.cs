@@ -19,7 +19,7 @@ namespace MinDb.Core
             }
             
             var queryModel = CommandProcessor.Process(_databaseFilename, query);
-            return "SUCCESS";
+            return "";
         }
     }
 }
