@@ -9,6 +9,7 @@ internal enum TokenType
     WhereKeyword,
     InsertKeyword,
     ValuesKeyword,
+    DeleteKeyword,
     AndKeyword,
     OrKeyword,
 

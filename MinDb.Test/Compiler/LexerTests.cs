@@ -49,6 +49,13 @@ namespace MinDb.Test
         }
 
         [Fact]
+        public void Tokenize_DeleteKeyword()
+        {
+            var tokens = Tokenize("DELETE");
+            AssertTokenSequence(tokens, TokenType.DeleteKeyword);
+        }
+
+        [Fact]
         public void Tokenize_AndKeyword()
         {
             var tokens = Tokenize("AND");

@@ -102,6 +102,9 @@ namespace MinDb.Compiler
                 case "values":
                     tokenType = TokenType.ValuesKeyword;
                     break;
+                case "delete":
+                    tokenType = TokenType.DeleteKeyword;
+                    break;
                 case "and":
                     tokenType = TokenType.AndKeyword;
                     break;
