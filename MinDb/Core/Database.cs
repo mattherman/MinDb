@@ -5,12 +5,10 @@ namespace MinDb.Core
     public class Database
     {
         private readonly string _databaseFilename;
-        private readonly CommandProcessor _processor;
 
         public Database(string databaseFilename)
         {
             _databaseFilename = databaseFilename;
-            _processor = new CommandProcessor();
         }
 
         public string Execute(string query)
@@ -20,7 +18,8 @@ namespace MinDb.Core
                 return "Unable to process query: no input";
             }
             
-            return _processor.Process(_databaseFilename, query);
+            var queryModel = CommandProcessor.Process(_databaseFilename, query);
+            return "SUCCESS";
         }
     }
 }

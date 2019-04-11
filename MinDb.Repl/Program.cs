@@ -14,8 +14,8 @@ namespace MinDb.Repl
             while (true)
             {
                 Console.Write("db > ");
-                input = Console.ReadLine();
-                //input = "";
+                //input = Console.ReadLine();
+                input = "Select FirstName, LastName, Age";
                 if (string.Compare(input, ":q", true) == 0) break;
 
                 var result = db.Execute(input);
