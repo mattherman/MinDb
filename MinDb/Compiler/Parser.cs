@@ -4,7 +4,7 @@ using System.Linq;
 /*
     == Limited SQL Grammar ==
 
-    S -> select TARGET_COLUMNS from TARGET_TABLE where WHERE_CLAUSE
+    S -> select TARGET_COLUMNS from TARGET_TABLE WHERE_CLAUSE
 
     TARGET_COLUMNS -> '*'
     TARGET_COLUMNS -> OBJECT_LIST
@@ -16,11 +16,15 @@ using System.Linq;
 
     TARGET_TABLE -> object
 
-    WHERE_CLAUSE -> object operator CONDITION_TARGET WHERE_CLAUSE_NEXT
+    WHERE_CLAUSE -> where CONDITION
+    WHERE_CLAUSE -> ''
 
-    WHERE_CLAUSE_NEXT -> and WHERE_CLAUSE
-    WHERE_CLAUSE_NEXT -> or WHERE_CLAUSE
-    WHERE_CLAUSE_NEXT -> ''
+    CONDITION -> '(' CONDITION ')'
+    CONDITION -> object operator CONDITION_TARGET CONDITION_NEXT
+
+    CONDITION_NEXT -> and CONDITION
+    CONDITION_NEXT -> or CONDITION
+    CONDITION_NEXT -> ''
 
     CONDITION_TARGET -> object
     CONDITION_TARGET -> VALUE
