@@ -43,6 +43,13 @@ namespace MinDb.Test
         }
 
         [Fact]
+        public void Tokenize_IntoKeyword()
+        {
+            var tokens = Tokenize("INTO");
+            AssertTokenSequence(tokens, TokenType.IntoKeyword, TokenType.EndOfSequence);
+        }
+
+        [Fact]
         public void Tokenize_ValuesKeyword()
         {
             var tokens = Tokenize("VALUES");
@@ -173,7 +180,7 @@ namespace MinDb.Test
         }
 
         [Fact]
-        public void Tokenize_MultiTokenStatement()
+        public void Tokenize_SelectStatement()
         {
             const string statement = "SELECT * FROM Users WHERE (FirstName = 'Matt' AND LastName = 'Herman') OR Age > 0";
             var tokens = Tokenize(statement);
@@ -213,6 +220,57 @@ namespace MinDb.Test
                 TokenType.GreaterThan,
                 TokenType.Whitespace,
                 TokenType.Integer,
+                TokenType.EndOfSequence
+            );
+        }
+
+        [Fact]
+        public void Tokenize_InsertStatement()
+        {
+            const string statement = "INSERT INTO Users VALUES (1, 'John'), (2, 'Sally')";
+            var tokens = Tokenize(statement);
+
+            AssertTokenSequence(
+                tokens,
+                TokenType.InsertKeyword,
+                TokenType.Whitespace,
+                TokenType.IntoKeyword,
+                TokenType.Whitespace,
+                TokenType.Object,
+                TokenType.Whitespace,
+                TokenType.ValuesKeyword,
+                TokenType.Whitespace,
+                TokenType.OpenParenthesis,
+                TokenType.Integer,
+                TokenType.Comma,
+                TokenType.Whitespace,
+                TokenType.StringLiteral,
+                TokenType.CloseParenthesis,
+                TokenType.Comma,
+                TokenType.Whitespace,
+                TokenType.OpenParenthesis,
+                TokenType.Integer,
+                TokenType.Comma,
+                TokenType.Whitespace,
+                TokenType.StringLiteral,
+                TokenType.CloseParenthesis,
+                TokenType.EndOfSequence
+            );
+        }
+
+        [Fact]
+        public void Tokenize_DeleteStatement()
+        {
+            const string statement = "DELETE FROM Users";
+            var tokens = Tokenize(statement);
+
+            AssertTokenSequence(
+                tokens,
+                TokenType.DeleteKeyword,
+                TokenType.Whitespace,
+                TokenType.FromKeyword,
+                TokenType.Whitespace,
+                TokenType.Object,
                 TokenType.EndOfSequence
             );
         }

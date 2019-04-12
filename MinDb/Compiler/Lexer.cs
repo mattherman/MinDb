@@ -102,6 +102,9 @@ namespace MinDb.Compiler
                 case "insert":
                     tokenType = TokenType.InsertKeyword;
                     break;
+                case "into":
+                    tokenType = TokenType.IntoKeyword;
+                    break;
                 case "values":
                     tokenType = TokenType.ValuesKeyword;
                     break;
