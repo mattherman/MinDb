@@ -8,6 +8,7 @@ internal enum TokenType
     FromKeyword,
     WhereKeyword,
     InsertKeyword,
+    IntoKeyword,
     ValuesKeyword,
     DeleteKeyword,
     AndKeyword,
@@ -31,5 +32,8 @@ internal enum TokenType
     Star,
     OpenParenthesis,
     CloseParenthesis,
-    Whitespace
+    Whitespace,
+
+    // Misc.
+    EndOfSequence
 }

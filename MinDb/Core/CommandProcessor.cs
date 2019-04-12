@@ -14,7 +14,7 @@ internal static class CommandProcessor
         var parser = new Parser(tokens);
         var queryModel = parser.Parse();
 
-        Console.WriteLine($"[DEBUG] Table = {queryModel.TargetTable}, Columns = [{string.Join(",", queryModel.TargetColumns)}]");
+        Console.WriteLine($"[DEBUG] {queryModel}");
 
         return queryModel;
     }
