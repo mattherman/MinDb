@@ -23,7 +23,7 @@ namespace MinDb.Core
             try
             {
                 var queryResult = _commandProcessor.Process(query);
-                return "Success.";
+                return string.Join("\n", queryResult.Rows);
             }
             catch (LexerException ex)
             {

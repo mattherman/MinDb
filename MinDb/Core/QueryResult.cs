@@ -4,16 +4,30 @@ namespace MinDb.Core
 {
     public class QueryResult
     {
-        private IEnumerable<Row> _rows;
-        public IEnumerable<Row> Rows
+        public IList<Row> Rows { get; }
+
+        public QueryResult()
         {
-            get { return _rows != null ? _rows : new List<Row>(); }
-            set { _rows = value; }
+            Rows = new List<Row>();
         }
     }
 
     public class Row
     {
-        
+        public int Id { get; }
+        public string Username { get; }
+        public string Email { get; }
+
+        public Row(int id, string username, string email)
+        {
+            Id = id;
+            Username = username;
+            Email = email;
+        }
+
+        public override string ToString()
+        {
+            return $"{Id}\t{Username}\t{Email}";
+        }
     }
 }

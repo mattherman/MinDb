@@ -19,7 +19,15 @@ namespace MinDb.Storage
 
         public QueryResult Select(SelectQueryModel query)
         {
-            return null;
+            if (string.Compare(query.TargetTable.Name, "users") != 0)
+            {
+                throw new DataAccessException("Table does not exist");
+            }
+
+            var result = new QueryResult();
+
+
+            return result;
         }
 
         public QueryResult Insert(InsertQueryModel query)
@@ -29,13 +37,22 @@ namespace MinDb.Storage
                 throw new DataAccessException("Table does not exist");
             }
 
+            var result = new QueryResult();
+
             foreach (var row in query.Rows)
             {
                 var values = row.Values.ToList();
-                _users.Insert(int.Parse(values[0].Value), values[1].Value, values[2].Value);
+
+                var id = int.Parse(values[0].Value);
+                var username = values[1].Value;
+                var email = values[2].Value;
+
+                _users.Insert(id, username, email);
+
+                result.Rows.Add(new Row(id, username, email));
             }
 
-            return new QueryResult();
+            return result;
         }
 
         public QueryResult Delete(DeleteQueryModel query)
@@ -76,14 +93,14 @@ namespace MinDb.Storage
         {
             _pages[_currentPage, _currentIndex + offset] = (byte)(value >> 24);
             _pages[_currentPage, _currentIndex + offset + 1] = (byte)(value >> 16);
-            _pages[_currentPage, _currentIndex + offset + 2] = (byte)(value >> 8 );
+            _pages[_currentPage, _currentIndex + offset + 2] = (byte)(value >> 8);
             _pages[_currentPage, _currentIndex + offset + 3] = (byte)value;
         }
 
         private void CopyToPage(int offset, string value)
         {
             var valueBytes = Encoding.UTF8.GetBytes(value);
-            for (var i=0; i<valueBytes.Length; i++)
+            for (var i = 0; i < valueBytes.Length; i++)
             {
                 _pages[_currentPage, _currentIndex + offset + i] = valueBytes[i];
             }
