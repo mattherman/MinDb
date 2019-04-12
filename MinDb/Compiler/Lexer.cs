@@ -72,6 +72,8 @@ namespace MinDb.Compiler
                 tokens.Add(new Token(match.Type, match.Value));
             }
 
+            tokens.Add(new Token(TokenType.EndOfSequence, null));
+
             return tokens;
         }
 

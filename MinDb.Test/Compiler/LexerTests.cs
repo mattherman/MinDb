@@ -18,84 +18,84 @@ namespace MinDb.Test
         public void Tokenize_SelectKeyword()
         {
             var tokens = Tokenize("SELECT");
-            AssertTokenSequence(tokens, TokenType.SelectKeyword);
+            AssertTokenSequence(tokens, TokenType.SelectKeyword, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_FromKeyword()
         {
             var tokens = Tokenize("FROM");
-            AssertTokenSequence(tokens, TokenType.FromKeyword);
+            AssertTokenSequence(tokens, TokenType.FromKeyword, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_WhereKeyword()
         {
             var tokens = Tokenize("WHERE");
-            AssertTokenSequence(tokens, TokenType.WhereKeyword);
+            AssertTokenSequence(tokens, TokenType.WhereKeyword, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_InsertKeyword()
         {
             var tokens = Tokenize("INSERT");
-            AssertTokenSequence(tokens, TokenType.InsertKeyword);
+            AssertTokenSequence(tokens, TokenType.InsertKeyword, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_ValuesKeyword()
         {
             var tokens = Tokenize("VALUES");
-            AssertTokenSequence(tokens, TokenType.ValuesKeyword);
+            AssertTokenSequence(tokens, TokenType.ValuesKeyword, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_DeleteKeyword()
         {
             var tokens = Tokenize("DELETE");
-            AssertTokenSequence(tokens, TokenType.DeleteKeyword);
+            AssertTokenSequence(tokens, TokenType.DeleteKeyword, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_AndKeyword()
         {
             var tokens = Tokenize("AND");
-            AssertTokenSequence(tokens, TokenType.AndKeyword);
+            AssertTokenSequence(tokens, TokenType.AndKeyword, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_OrKeyword()
         {
             var tokens = Tokenize("OR");
-            AssertTokenSequence(tokens, TokenType.OrKeyword);
+            AssertTokenSequence(tokens, TokenType.OrKeyword, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_Star()
         {
             var tokens = Tokenize("*");
-            AssertTokenSequence(tokens, TokenType.Star);
+            AssertTokenSequence(tokens, TokenType.Star, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_Object()
         {
             var tokens = Tokenize("Test");
-            AssertTokenSequence(tokens, TokenType.Object);
+            AssertTokenSequence(tokens, TokenType.Object, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_Object_WithLettersAndDigits()
         {
             var tokens = Tokenize("Test123");
-            AssertTokenSequence(tokens, TokenType.Object);
+            AssertTokenSequence(tokens, TokenType.Object, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_Integer()
         {
             var tokens = Tokenize("123456");
-            AssertTokenSequence(tokens, TokenType.Integer);
+            AssertTokenSequence(tokens, TokenType.Integer, TokenType.EndOfSequence);
         }
 
         [Fact]
@@ -114,14 +114,14 @@ namespace MinDb.Test
         public void Tokenize_StringLiteral()
         {
             var tokens = Tokenize("'hello'");
-            AssertTokenSequence(tokens, TokenType.StringLiteral);
+            AssertTokenSequence(tokens, TokenType.StringLiteral, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_StringLiteral_MultiTerm()
         {
             var tokens = Tokenize("'hello world'");
-            AssertTokenSequence(tokens, TokenType.StringLiteral);
+            AssertTokenSequence(tokens, TokenType.StringLiteral, TokenType.EndOfSequence);
         }
 
         [Fact]
@@ -134,42 +134,42 @@ namespace MinDb.Test
         public void Tokenize_Operator_Equal()
         {
             var tokens = Tokenize("=");
-            AssertTokenSequence(tokens, TokenType.Equal);
+            AssertTokenSequence(tokens, TokenType.Equal, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_Operator_NotEqual()
         {
             var tokens = Tokenize("<>");
-            AssertTokenSequence(tokens, TokenType.NotEqual);
+            AssertTokenSequence(tokens, TokenType.NotEqual, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_Operator_LessThan()
         {
             var tokens = Tokenize("<");
-            AssertTokenSequence(tokens, TokenType.LessThan);
+            AssertTokenSequence(tokens, TokenType.LessThan, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_Operator_LessThanOrEqual()
         {
             var tokens = Tokenize("<=");
-            AssertTokenSequence(tokens, TokenType.LessThanOrEqual);
+            AssertTokenSequence(tokens, TokenType.LessThanOrEqual, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_Operator_GreaterThan()
         {
             var tokens = Tokenize(">");
-            AssertTokenSequence(tokens, TokenType.GreaterThan);
+            AssertTokenSequence(tokens, TokenType.GreaterThan, TokenType.EndOfSequence);
         }
 
         [Fact]
         public void Tokenize_Operator_GreaterThanOrEqual()
         {
             var tokens = Tokenize(">=");
-            AssertTokenSequence(tokens, TokenType.GreaterThanOrEqual);
+            AssertTokenSequence(tokens, TokenType.GreaterThanOrEqual, TokenType.EndOfSequence);
         }
 
         [Fact]
@@ -178,7 +178,6 @@ namespace MinDb.Test
             const string statement = "SELECT * FROM Users WHERE (FirstName = 'Matt' AND LastName = 'Herman') OR Age > 0";
             var tokens = Tokenize(statement);
 
-            Assert.Equal(33, tokens.Count);
             AssertTokenSequence(
                 tokens,
                 TokenType.SelectKeyword,
@@ -213,7 +212,8 @@ namespace MinDb.Test
                 TokenType.Whitespace,
                 TokenType.GreaterThan,
                 TokenType.Whitespace,
-                TokenType.Integer
+                TokenType.Integer,
+                TokenType.EndOfSequence
             );
         }
 
