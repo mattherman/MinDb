@@ -4,7 +4,8 @@ A minimal SQLite-like database written in C# in order to learn more about databa
 
 Example:
 ```
-db > Select FirstName, LastName, Age FROM Users
-[DEBUG] select firstname, lastname, age from users
-[DEBUG] Table = users, Columns = [firstname,lastname,age]
+db > SELECT Id, Name, Age FROM Users
+[DEBUG] Tokens = [SelectKeyword, Whitespace, Object 'id', Comma, Whitespace, Object 'name', Comma, Whitespace, Object 'age', Whitespace, FromKeyword, Whitespace, Object 'users', EndOfSequence]
+[DEBUG] SELECT | Table = users, Columns = [id,name,age]
+Success.
 ```
