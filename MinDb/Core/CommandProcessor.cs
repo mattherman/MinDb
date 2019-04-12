@@ -1,21 +1,25 @@
 using System;
 using System.Linq;
 using MinDb.Compiler;
+using MinDb.Compiler.Models;
 
-internal static class CommandProcessor
+namespace MinDb.Core
 {
-    public static QueryModel Process(string databaseFilename, string query)
+    internal static class CommandProcessor
     {
-        var lexer = new Lexer(query);
-        var tokens = lexer.Tokenize();
-        
-        Console.WriteLine($"[DEBUG] {string.Join(string.Empty, tokens.Select(t => t.Value))}");
+        public static QueryModel Process(string databaseFilename, string query)
+        {
+            var lexer = new Lexer(query);
+            var tokens = lexer.Tokenize();
 
-        var parser = new Parser(tokens);
-        var queryModel = parser.Parse();
+            Console.WriteLine($"[DEBUG] {string.Join(string.Empty, tokens.Select(t => t.Value))}");
 
-        Console.WriteLine($"[DEBUG] {queryModel}");
+            var parser = new Parser(tokens);
+            var queryModel = parser.Parse();
 
-        return queryModel;
+            Console.WriteLine($"[DEBUG] {queryModel}");
+
+            return queryModel;
+        }
     }
 }

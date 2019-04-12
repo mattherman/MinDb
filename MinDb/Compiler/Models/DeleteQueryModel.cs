@@ -1,7 +1,10 @@
-internal class DeleteQueryModel : QueryModel
+namespace MinDb.Compiler.Models
 {
-    public override string ToString()
+    internal class DeleteQueryModel : QueryModel
     {
-        return $"DELETE | Table = {TargetTable}";
-    } 
+        public override string ToString()
+        {
+            return $"DELETE | Table = {TargetTable}";
+        }
+    }
 }

@@ -1,6 +1,9 @@
 using System;
 
-internal class ParserException : Exception
+namespace MinDb.Compiler
 {
-    public ParserException(string message) : base(message) { }
+    internal class ParserException : Exception
+    {
+        public ParserException(string message) : base(message) { }
+    }
 }

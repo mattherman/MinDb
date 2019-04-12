@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using MinDb.Compiler;
+using MinDb.Compiler.Models;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -219,7 +220,7 @@ namespace MinDb.Test
         private void AssertTokenSequence(IList<Token> tokens, params TokenType[] expectedTokens)
         {
             Assert.Equal(expectedTokens.Length, tokens.Count);
-            for (var i=0; i<tokens.Count; i++)
+            for (var i = 0; i < tokens.Count; i++)
             {
                 Assert.Equal(expectedTokens[i], tokens[i].Type);
             }

@@ -1,6 +1,9 @@
 using System;
 
-internal class TokenizationException : Exception
+namespace MinDb.Compiler
 {
-    public TokenizationException(string message) : base(message) { }
+    internal class TokenizationException : Exception
+    {
+        public TokenizationException(string message) : base(message) { }
+    }
 }

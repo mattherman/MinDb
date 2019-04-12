@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 
-internal abstract class QueryModel
+namespace MinDb.Compiler.Models
 {
-    public string TargetTable { get; set; }
+    internal abstract class QueryModel
+    {
+        public string TargetTable { get; set; }
+    }
 }

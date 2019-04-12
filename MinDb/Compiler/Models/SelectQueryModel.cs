@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 
-internal class SelectQueryModel : QueryModel
+namespace MinDb.Compiler.Models
 {
-    public IEnumerable<string> TargetColumns { get; set; }
-
-    public override string ToString()
+    internal class SelectQueryModel : QueryModel
     {
-        return $"SELECT | Table = {TargetTable}, Columns = [{string.Join(",", TargetColumns)}]";
+        public IEnumerable<string> TargetColumns { get; set; }
+
+        public override string ToString()
+        {
+            return $"SELECT | Table = {TargetTable}, Columns = [{string.Join(",", TargetColumns)}]";
+        }
     }
 }

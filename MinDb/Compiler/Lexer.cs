@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MinDb.Compiler.Models;
 
 namespace MinDb.Compiler
 {
