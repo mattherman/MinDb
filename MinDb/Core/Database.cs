@@ -1,4 +1,5 @@
 ﻿using System;
+using MinDb.Compiler;
 
 namespace MinDb.Core
 {
@@ -18,8 +19,19 @@ namespace MinDb.Core
                 return "Unable to process query: no input";
             }
             
-            var queryModel = CommandProcessor.Process(_databaseFilename, query);
-            return "";
+            try
+            {
+                var queryModel = CommandProcessor.Process(_databaseFilename, query);
+                return "Success.";
+            }
+            catch (LexerException ex)
+            {
+                return $"Failed to tokenize the input: {ex.Message}";
+            }
+            catch (ParserException ex)
+            {
+                return $"Failed to parse the input: {ex.Message}";
+            }
         }
     }
 }

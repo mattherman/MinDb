@@ -12,7 +12,7 @@ namespace MinDb.Core
             var lexer = new Lexer(query);
             var tokens = lexer.Tokenize();
 
-            Console.WriteLine($"[DEBUG] {string.Join(string.Empty, tokens.Select(t => t.Value))}");
+            Console.WriteLine($"[DEBUG] Tokens = [{string.Join(", ", tokens)}]");
 
             var parser = new Parser(tokens);
             var queryModel = parser.Parse();

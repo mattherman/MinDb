@@ -13,7 +13,12 @@ namespace MinDb.Compiler.Models
 
         public override string ToString()
         {
-            return $"[{Type}]\t {Value}";
+            var valueString = "";
+            if (Type == TokenType.Object || Type == TokenType.StringLiteral || Type == TokenType.Integer)
+            {
+                valueString = $" '{Value}'";
+            }
+            return $"{Type}{valueString}";
         }
     }
 }
