@@ -1,15 +1,16 @@
 ﻿using System;
 using MinDb.Compiler;
+using MinDb.Storage;
 
 namespace MinDb.Core
 {
     public class Database
     {
-        private readonly string _databaseFilename;
+        private readonly CommandProcessor _commandProcessor;
 
         public Database(string databaseFilename)
         {
-            _databaseFilename = databaseFilename;
+            _commandProcessor = new CommandProcessor(databaseFilename);
         }
 
         public string Execute(string query)
@@ -21,7 +22,7 @@ namespace MinDb.Core
             
             try
             {
-                var queryModel = CommandProcessor.Process(_databaseFilename, query);
+                var queryResult = _commandProcessor.Process(query);
                 return "Success.";
             }
             catch (LexerException ex)
@@ -31,6 +32,10 @@ namespace MinDb.Core
             catch (ParserException ex)
             {
                 return $"Failed to parse the input: {ex.Message}";
+            }
+            catch (QueryExecutionException ex)
+            {
+                return $"Failed to execute query: {ex.Message}";
             }
         }
     }

@@ -5,9 +5,16 @@ using MinDb.Compiler.Models;
 
 namespace MinDb.Core
 {
-    internal static class CommandProcessor
+    internal class CommandProcessor
     {
-        public static QueryModel Process(string databaseFilename, string query)
+        private readonly VirtualMachine _vm;
+
+        public CommandProcessor(string databaseFilename)
+        {
+            _vm = new VirtualMachine(databaseFilename);
+        }
+
+        public QueryResult Process(string query)
         {
             var lexer = new Lexer(query);
             var tokens = lexer.Tokenize();
@@ -19,7 +26,7 @@ namespace MinDb.Core
 
             Console.WriteLine($"[DEBUG] {queryModel}");
 
-            return queryModel;
+            return _vm.Execute(queryModel);
         }
     }
 }
