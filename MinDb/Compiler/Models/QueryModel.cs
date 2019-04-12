@@ -4,6 +4,6 @@ namespace MinDb.Compiler.Models
 {
     internal abstract class QueryModel
     {
-        public string TargetTable { get; set; }
+        public ObjectModel TargetTable { get; set; }
     }
 }

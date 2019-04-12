@@ -17,15 +17,20 @@ namespace MinDb.Compiler
 
         DELETE -> delete from object WHERE_CLAUSE
 
-        INSERT_ROW -> GROUPED_OBJECT_LIST INSERT_ROW_NEXT
+        INSERT_ROW -> GROUPED_VALUE_LIST INSERT_ROW_NEXT
 
-        INSERT_ROW_NEXT -> ',' GROUPED_OBJECT_LIST INSERT_ROW_NEXT
+        INSERT_ROW_NEXT -> ',' GROUPED_VALUE_LIST INSERT_ROW_NEXT
         INSERT_ROW_NEXT -> ''
 
         TARGET_COLUMNS -> '*'
         TARGET_COLUMNS -> OBJECT_LIST
 
-        GROUPED_OBJECT_LIST -> '(' OBJECT_LIST ')'
+        GROUPED_VALUE_LIST -> '(' VALUE_LIST ')'
+
+        VALUE_LIST -> VALUE VALUE_LIST_NEXT
+
+        VALUE_LIST_NEXT -> ',' VALUE VALUE_LIST_NEXT
+        VALUE_LIST_NEXT -> ''
 
         OBJECT_LIST -> object OBJECT_LIST_NEXT
 
@@ -79,9 +84,8 @@ namespace MinDb.Compiler
         public Parser(IEnumerable<Token> tokens)
         {
             _tokens = new Stack<Token>();
-            foreach (var token in tokens.Reverse())
+            foreach (var token in tokens.Reverse().Where(t => t.Type != TokenType.Whitespace))
             {
-                if (token.Type == TokenType.Whitespace) continue;
                 _tokens.Push(token);
             }
 
@@ -116,14 +120,11 @@ namespace MinDb.Compiler
 
             DiscardToken(TokenType.SelectKeyword);
 
-            var targetColumns = ParseObjectList();
-            queryModel.TargetColumns = targetColumns;
+            queryModel.TargetColumns = ParseObjectList();
 
             DiscardToken(TokenType.FromKeyword);
 
-            ExpectToken(TokenType.Object);
-            queryModel.TargetTable = Current.Value;
-            DiscardToken();
+            queryModel.TargetTable = ParseObject();
 
             ExpectToken(TokenType.EndOfSequence);
 
@@ -132,37 +133,60 @@ namespace MinDb.Compiler
 
         private QueryModel ParseInsert()
         {
-            return new InsertQueryModel();
+            var queryModel = new InsertQueryModel();
+
+            DiscardToken(TokenType.InsertKeyword);
+            DiscardToken(TokenType.IntoKeyword);
+
+            queryModel.TargetTable = ParseObject();
+
+            DiscardToken(TokenType.ValuesKeyword);
+            return queryModel;
         }
 
         private QueryModel ParseDelete()
         {
-            return null;
+            var queryModel = new DeleteQueryModel();
+
+            DiscardToken(TokenType.DeleteKeyword);
+            DiscardToken(TokenType.FromKeyword);
+
+            queryModel.TargetTable = ParseObject();
+
+            ExpectToken(TokenType.EndOfSequence);
+
+            return queryModel;
         }
 
-        private IList<string> ParseObjectList()
-        {
-            var objectList = new List<string>();
 
-            ExpectToken(TokenType.Object);
-            objectList.Add(Current.Value);
-            DiscardToken();
+        private IList<ObjectModel> ParseObjectList()
+        {
+            var objectList = new List<ObjectModel>();
+
+            objectList.Add(ParseObject());
 
             ParseObjectListNext(objectList);
 
             return objectList;
         }
 
-        private void ParseObjectListNext(IList<string> objectList)
+        private void ParseObjectListNext(IList<ObjectModel> objectList)
         {
             if (Current.Type != TokenType.Comma) return;
             DiscardToken();
 
-            ExpectToken(TokenType.Object);
-            objectList.Add(Current.Value);
-            DiscardToken();
+            objectList.Add(ParseObject());
 
             ParseObjectListNext(objectList);
+        }
+
+        private ObjectModel ParseObject()
+        {
+            ExpectToken(TokenType.Object);
+            var objectModel = new ObjectModel(Current.Value);
+            DiscardToken();
+
+            return objectModel;
         }
     }
 }

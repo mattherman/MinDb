@@ -27,10 +27,10 @@ namespace MinDb.Tests
             );
 
             var columns = model.TargetColumns.ToList();
-            Assert.Equal("FirstName", columns[0]);
-            Assert.Equal("LastName", columns[1]);
+            Assert.Equal("FirstName", columns[0].Name);
+            Assert.Equal("LastName", columns[1].Name);
 
-            Assert.Equal("Users", model.TargetTable);
+            Assert.Equal("Users", model.TargetTable.Name);
         }
 
         [Fact]
@@ -69,6 +69,20 @@ namespace MinDb.Tests
         }
 
         [Fact]
+        public void Parse_Select_EndOfSequenceMustFollowTable()
+        {
+            Assert.Throws<ParserException>(() =>
+                Parse<SelectQueryModel>(
+                    new Token(TokenType.SelectKeyword, null),
+                    new Token(TokenType.Object, "FirstName"),
+                    new Token(TokenType.FromKeyword, null),
+                    new Token(TokenType.Object, "Users"),
+                    new Token(TokenType.WhereKeyword, null)
+                )
+            );
+        }
+
+        [Fact]
         public void Parse_Insert()
         {
             var model = Parse<InsertQueryModel>(
@@ -85,11 +99,36 @@ namespace MinDb.Tests
                 new Token(TokenType.OpenParenthesis, null),
                 new Token(TokenType.Integer, "2"),
                 new Token(TokenType.Comma, null),
-                new Token(TokenType.StringLiteral, "Jame"),
+                new Token(TokenType.StringLiteral, "Jane"),
                 new Token(TokenType.CloseParenthesis, null)
             );
 
-            Assert.Equal("Users", model.TargetTable);
+            Assert.Equal("Users", model.TargetTable.Name);
+        }
+
+        [Fact]
+        public void Parse_Insert_EndOfSequenceMustFollowGroupedValues()
+        {
+            Assert.Throws<ParserException>(() =>
+                Parse<InsertQueryModel>(
+                    new Token(TokenType.InsertKeyword, null),
+                    new Token(TokenType.IntoKeyword, null),
+                    new Token(TokenType.Object, "Users"),
+                    new Token(TokenType.ValuesKeyword, null),
+                    new Token(TokenType.OpenParenthesis, null),
+                    new Token(TokenType.Integer, "1"),
+                    new Token(TokenType.Comma, null),
+                    new Token(TokenType.StringLiteral, "John"),
+                    new Token(TokenType.CloseParenthesis, null),
+                    new Token(TokenType.Comma, null),
+                    new Token(TokenType.OpenParenthesis, null),
+                    new Token(TokenType.Integer, "2"),
+                    new Token(TokenType.Comma, null),
+                    new Token(TokenType.StringLiteral, "Jane"),
+                    new Token(TokenType.CloseParenthesis, null),
+                    new Token(TokenType.ValuesKeyword, null)
+                )
+            );
         }
 
         [Fact]
@@ -101,7 +140,20 @@ namespace MinDb.Tests
                 new Token(TokenType.Object, "Users")
             );
 
-            Assert.Equal("Users", model.TargetTable);
+            Assert.Equal("Users", model.TargetTable.Name);
+        }
+
+        [Fact]
+        public void Parse_Delete_EndOfSequenceMustFollowTable()
+        {
+            Assert.Throws<ParserException>(() =>
+                Parse<InsertQueryModel>(
+                    new Token(TokenType.DeleteKeyword, null),
+                    new Token(TokenType.FromKeyword, null),
+                    new Token(TokenType.Object, "Users"),
+                    new Token(TokenType.WhereKeyword, null)
+                )
+            );
         }
     }
 }

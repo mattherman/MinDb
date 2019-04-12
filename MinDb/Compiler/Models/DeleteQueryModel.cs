@@ -4,7 +4,7 @@ namespace MinDb.Compiler.Models
     {
         public override string ToString()
         {
-            return $"DELETE | Table = {TargetTable}";
+            return $"DELETE | Table = {TargetTable.Name}";
         }
     }
 }
