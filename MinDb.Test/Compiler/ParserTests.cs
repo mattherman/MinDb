@@ -107,6 +107,56 @@ namespace MinDb.Tests
         }
 
         [Fact]
+        public void Parse_Insert_IntoMustFollowInsert()
+        {
+            Assert.Throws<ParserException>(() =>
+                Parse<InsertQueryModel>(
+                    new Token(TokenType.InsertKeyword, null),
+                    new Token(TokenType.Object, "Users")
+                )
+            );
+        }
+
+        [Fact]
+        public void Parse_Insert_TableMustFollowInto()
+        {
+            Assert.Throws<ParserException>(() =>
+                Parse<InsertQueryModel>(
+                    new Token(TokenType.InsertKeyword, null),
+                    new Token(TokenType.IntoKeyword, null),
+                    new Token(TokenType.ValuesKeyword, null)
+                )
+            );
+        }
+
+        [Fact]
+        public void Parse_Insert_ValuesMustFollowTable()
+        {
+            Assert.Throws<ParserException>(() =>
+                Parse<InsertQueryModel>(
+                    new Token(TokenType.InsertKeyword, null),
+                    new Token(TokenType.IntoKeyword, null),
+                    new Token(TokenType.Object, "Users"),
+                    new Token(TokenType.OpenParenthesis, null)
+                )
+            );
+        }
+
+        [Fact]
+        public void Parse_Insert_RowMustFollowValues()
+        {
+            Assert.Throws<ParserException>(() =>
+                Parse<InsertQueryModel>(
+                    new Token(TokenType.InsertKeyword, null),
+                    new Token(TokenType.IntoKeyword, null),
+                    new Token(TokenType.Object, "Users"),
+                    new Token(TokenType.ValuesKeyword, null),
+                    new Token(TokenType.WhereKeyword, null)
+                )
+            );
+        }
+
+        [Fact]
         public void Parse_Insert_EndOfSequenceMustFollowGroupedValues()
         {
             Assert.Throws<ParserException>(() =>
@@ -141,6 +191,29 @@ namespace MinDb.Tests
             );
 
             Assert.Equal("Users", model.TargetTable.Name);
+        }
+
+        [Fact]
+        public void Parse_Delete_FromMustFollowDelete()
+        {
+            Assert.Throws<ParserException>(() =>
+                Parse<InsertQueryModel>(
+                    new Token(TokenType.DeleteKeyword, null),
+                    new Token(TokenType.Object, "Users")
+                )
+            );
+        }
+
+        [Fact]
+        public void Parse_Delete_TableMustFollowFrom()
+        {
+            Assert.Throws<ParserException>(() =>
+                Parse<InsertQueryModel>(
+                    new Token(TokenType.DeleteKeyword, null),
+                    new Token(TokenType.FromKeyword, null),
+                    new Token(TokenType.WhereKeyword, null)
+                )
+            );
         }
 
         [Fact]

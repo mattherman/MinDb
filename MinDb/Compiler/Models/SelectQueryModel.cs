@@ -5,7 +5,12 @@ namespace MinDb.Compiler.Models
 {
     internal class SelectQueryModel : QueryModel
     {
-        public IEnumerable<ObjectModel> TargetColumns { get; set; }
+        private IEnumerable<ObjectModel> _targetColumns;
+        public IEnumerable<ObjectModel> TargetColumns
+        {
+            get { return _targetColumns != null ? _targetColumns : new List<ObjectModel>(); }
+            set { _targetColumns = value; }
+        }
 
         public override string ToString()
         {

@@ -4,16 +4,16 @@ namespace MinDb.Compiler.Models
 {
     internal class ValueModelGroup
     {
-        public IEnumerable<ValueModel> ColumnValues { get; }
-
-        public ValueModelGroup()
+        private IEnumerable<ValueModel> _values;
+        public IEnumerable<ValueModel> Values
         {
-            ColumnValues = new List<ValueModel>();
+            get { return _values != null ? _values : new List<ValueModel>(); }
+            set { _values = value; }
         }
 
         public override string ToString()
         {
-            return $"({string.Join(",", ColumnValues)})";
+            return $"({string.Join(",", Values)})";
         }
     }
 }

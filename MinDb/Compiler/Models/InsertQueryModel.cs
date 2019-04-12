@@ -4,11 +4,11 @@ namespace MinDb.Compiler.Models
 {
     internal class InsertQueryModel : QueryModel
     {
-        public IEnumerable<ValueModelGroup> Rows { get; }
-
-        public InsertQueryModel()
+        private IEnumerable<ValueModelGroup> _rows;
+        public IEnumerable<ValueModelGroup> Rows
         {
-            Rows = new List<ValueModelGroup>();
+            get { return _rows != null ? _rows : new List<ValueModelGroup>(); }
+            set { _rows = value; }
         }
 
         public override string ToString()

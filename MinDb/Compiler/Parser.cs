@@ -13,7 +13,7 @@ namespace MinDb.Compiler
         
         SELECT -> select TARGET_COLUMNS from object WHERE_CLAUSE
 
-        INSERT -> insert into object values (col, col, col)
+        INSERT -> insert into object values INSERT_ROW
 
         DELETE -> delete from object WHERE_CLAUSE
 
@@ -91,7 +91,6 @@ namespace MinDb.Compiler
 
             // Initialize _current by popping the first token on the stack
             DiscardToken();
-
         }
 
         public QueryModel Parse()
@@ -141,6 +140,11 @@ namespace MinDb.Compiler
             queryModel.TargetTable = ParseObject();
 
             DiscardToken(TokenType.ValuesKeyword);
+
+            queryModel.Rows = ParseInsertRow();
+
+            ExpectToken(TokenType.EndOfSequence);
+
             return queryModel;
         }
 
@@ -158,26 +162,107 @@ namespace MinDb.Compiler
             return queryModel;
         }
 
-
-        private IList<ObjectModel> ParseObjectList()
+        private IList<ValueModelGroup> ParseInsertRow()
         {
-            var objectList = new List<ObjectModel>();
+            var rows = new List<ValueModelGroup>();
 
-            objectList.Add(ParseObject());
+            rows.Add(ParseGroupedValueList());
 
-            ParseObjectListNext(objectList);
+            ParseInsertRowNext(rows);
 
-            return objectList;
+            return rows;
         }
 
-        private void ParseObjectListNext(IList<ObjectModel> objectList)
+        private void ParseInsertRowNext(IList<ValueModelGroup> rows)
         {
             if (Current.Type != TokenType.Comma) return;
             DiscardToken();
 
-            objectList.Add(ParseObject());
+            rows.Add(ParseGroupedValueList());
 
-            ParseObjectListNext(objectList);
+            ParseInsertRowNext(rows);
+        }
+
+        private ValueModelGroup ParseGroupedValueList()
+        {
+            var group = new ValueModelGroup();
+            DiscardToken(TokenType.OpenParenthesis);
+            group.Values = ParseValueList();
+            DiscardToken(TokenType.CloseParenthesis);
+
+            return group;
+        }
+
+        private IList<ValueModel> ParseValueList()
+        {
+            var values = new List<ValueModel>();
+
+            values.Add(ParseValue());
+
+            ParseValueListNext(values);
+
+            return values;
+        }
+
+        private void ParseValueListNext(IList<ValueModel> values)
+        {
+            if (Current.Type != TokenType.Comma) return;
+            DiscardToken();
+
+            values.Add(ParseValue());
+
+            ParseValueListNext(values);
+        }
+
+        private ValueModel ParseValue()
+        {
+            if (Current.Type == TokenType.StringLiteral)
+            {
+                return ParseStringLiteral();
+            }
+            else
+            {
+                return ParseInteger();
+            }
+        }
+
+        private ValueModel ParseStringLiteral()
+        {
+            ExpectToken(TokenType.StringLiteral);
+            var valueModel = new ValueModel(ValueType.String, Current.Value);
+            DiscardToken();
+
+            return valueModel;
+        }
+
+        private ValueModel ParseInteger()
+        {
+            ExpectToken(TokenType.Integer);
+            var valueModel = new ValueModel(ValueType.Integer, Current.Value);
+            DiscardToken();
+
+            return valueModel;
+        }
+
+        private IList<ObjectModel> ParseObjectList()
+        {
+            var objects = new List<ObjectModel>();
+
+            objects.Add(ParseObject());
+
+            ParseObjectListNext(objects);
+
+            return objects;
+        }
+
+        private void ParseObjectListNext(IList<ObjectModel> objects)
+        {
+            if (Current.Type != TokenType.Comma) return;
+            DiscardToken();
+
+            objects.Add(ParseObject());
+
+            ParseObjectListNext(objects);
         }
 
         private ObjectModel ParseObject()
