@@ -101,13 +101,13 @@ namespace MinDb.Test
         [Fact]
         public void Tokenize_Integer_ExceedsMaxSize()
         {
-            Assert.Throws<TokenizationException>(() => Tokenize("123456789123456789123456789"));
+            Assert.Throws<LexerException>(() => Tokenize("123456789123456789123456789"));
         }
 
         [Fact]
         public void Tokenize_Integer_WithLettersAndDigits()
         {
-            Assert.Throws<TokenizationException>(() => Tokenize("123aBC"));
+            Assert.Throws<LexerException>(() => Tokenize("123aBC"));
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace MinDb.Test
         [Fact]
         public void Tokenize_StringLiteral_NeverClosed()
         {
-            Assert.Throws<TokenizationException>(() => Tokenize("'test a multiline unclosed string"));
+            Assert.Throws<LexerException>(() => Tokenize("'test a multiline unclosed string"));
         }
 
         [Fact]

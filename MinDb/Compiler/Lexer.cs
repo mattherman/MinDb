@@ -66,7 +66,7 @@ namespace MinDb.Compiler
 
                 if (match == null || match.Type == TokenType.Undefined)
                 {
-                    throw new TokenizationException($"Encountered unexpected character: {Current}");
+                    throw new LexerException($"Encountered unexpected character: {Current}");
                 }
 
                 tokens.Add(new Token(match.Type, match.Value));
@@ -132,7 +132,7 @@ namespace MinDb.Compiler
             var success = int.TryParse(value, out var _);
             if (!success)
             {
-                throw new TokenizationException($"Unable to tokenize integer: {value}");
+                throw new LexerException($"Unable to tokenize integer: {value}");
             }
 
             return new Token(TokenType.Integer, value);
@@ -150,7 +150,7 @@ namespace MinDb.Compiler
             }
             else
             {
-                throw new TokenizationException($"String literal was never closed: {value}");
+                throw new LexerException($"String literal was never closed: {value}");
             }
             
             // Add two to the length to get the correct sequence length with quotes
