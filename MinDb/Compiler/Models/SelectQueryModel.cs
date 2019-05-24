@@ -16,7 +16,7 @@ namespace MinDb.Compiler.Models
 
         public override string ToString()
         {
-            return $"SELECT | Table = {TargetTable.Name}, Columns = [{string.Join(",", TargetColumns.Select(c => c.Name))}]";
+            return $"SELECT | Table = {TargetTable.Name}, Columns = [{string.Join(",", TargetColumns.Select(c => c.Name))}], Condition = {Condition}";
         }
     }
 }

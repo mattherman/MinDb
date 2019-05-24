@@ -167,6 +167,8 @@ namespace MinDb.Compiler
 
             queryModel.TargetTable = ParseObject();
 
+            queryModel.Condition = ParseWhereClause();
+
             ExpectToken(TokenType.EndOfSequence);
 
             return queryModel;

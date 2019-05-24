@@ -13,8 +13,7 @@ namespace MinDb.Compiler.Models
 
         public override string ToString()
         {
-            var formattedValue = Type == ValueType.Integer ? Value : "'" + Value + "'";
-            return $"{Type} {formattedValue}";
+            return Type == ValueType.Integer ? Value : "'" + Value + "'";
         }
     }
 

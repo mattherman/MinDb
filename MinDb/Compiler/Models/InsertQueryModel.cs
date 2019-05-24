@@ -13,7 +13,7 @@ namespace MinDb.Compiler.Models
 
         public override string ToString()
         {
-            return $"INSERT | Table = {TargetTable.Name} Values = [{string.Join(",", Rows)}]";
+            return $"INSERT | Table = {TargetTable.Name}, Values = [{string.Join(",", Rows)}]";
         }
     }
 }

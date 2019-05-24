@@ -8,5 +8,7 @@ namespace MinDb.Compiler.Models
         {
             this.Name = Name;
         }
+
+        public override string ToString() => Name;
     }
 }
