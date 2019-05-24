@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using MinDb.Compiler.Models;
+using System;
+using ValueType = MinDb.Compiler.Models.ValueType;
 
 namespace MinDb.Compiler
 {
@@ -40,15 +42,12 @@ namespace MinDb.Compiler
         WHERE_CLAUSE -> where CONDITION
         WHERE_CLAUSE -> ''
 
-        CONDITION -> '(' CONDITION ')'
-        CONDITION -> object operator CONDITION_TARGET CONDITION_NEXT
+        CONDITION -> '(' CONDITION ')' CONDITION_NEXT
+        CONDITION -> object operator VALUE CONDITION_NEXT
 
         CONDITION_NEXT -> and CONDITION
         CONDITION_NEXT -> or CONDITION
         CONDITION_NEXT -> ''
-
-        CONDITION_TARGET -> object
-        CONDITION_TARGET -> VALUE
 
         VALUE -> string_literal
         VALUE -> integer
@@ -68,7 +67,7 @@ namespace MinDb.Compiler
         {
             if (Current.Type != type)
             {
-                throw new ParserException($"Expected {type} but found {Current.Type}");
+                UnexpectedToken(type);
             }
         }
 
@@ -79,6 +78,14 @@ namespace MinDb.Compiler
         {
             ExpectToken(type);
             DiscardToken();
+        }
+
+        private void UnexpectedToken(params TokenType[] expectedTokens)
+        {
+            var message = expectedTokens.Length == 1 ?
+                $"Expected {expectedTokens[0]} but found {Current.Type}" :
+                $"Expected one of {string.Join(",", expectedTokens)} but found {Current.Type}";
+            throw new ParserException(message);
         }
 
         public Parser(IEnumerable<Token> tokens)
@@ -109,7 +116,8 @@ namespace MinDb.Compiler
             }
             else
             {
-                throw new ParserException("Expected SELECT, INSERT, or DELETE");
+                UnexpectedToken(TokenType.SelectKeyword, TokenType.InsertKeyword, TokenType.DeleteKeyword);
+                return null;
             }
         }
 
@@ -124,6 +132,8 @@ namespace MinDb.Compiler
             DiscardToken(TokenType.FromKeyword);
 
             queryModel.TargetTable = ParseObject();
+
+            queryModel.Condition = ParseWhereClause();
 
             ExpectToken(TokenType.EndOfSequence);
 
@@ -214,6 +224,71 @@ namespace MinDb.Compiler
             ParseValueListNext(values);
         }
 
+        private ConditionModel ParseWhereClause()
+        {
+            if (Current.Type != TokenType.WhereKeyword) return null;
+            DiscardToken();
+
+            return ParseCondition();
+        }
+
+        private ConditionModel ParseCondition()
+        {
+            ConditionModel currentCondition;
+            if (Current.Type == TokenType.OpenParenthesis)
+            {
+                DiscardToken();
+                currentCondition = ParseCondition();
+                DiscardToken(TokenType.CloseParenthesis);
+            }
+            else
+            {
+                var obj = ParseObject();
+                var op = ParseOperator();
+                var target = ParseValue();
+                currentCondition = new ConditionModel 
+                {
+                    Left = new ConditionModel { Value = obj },
+                    Value = op,
+                    Right = new ConditionModel { Value = target }
+                };
+            }
+
+            return ParseConditionNext(currentCondition);
+        }
+
+        private ConditionModel ParseConditionNext(ConditionModel previousCondition)
+        {
+            if (Current.Type == TokenType.AndKeyword)
+            {
+                DiscardToken();
+                var nextCondition = ParseCondition();
+                var op = new OperatorModel(OperatorType.And);
+                return new ConditionModel
+                {
+                    Left = previousCondition,
+                    Value = op,
+                    Right = nextCondition
+                };
+            }
+            else if (Current.Type == TokenType.OrKeyword)
+            {
+                DiscardToken();
+                var nextCondition = ParseCondition();
+                var op = new OperatorModel(OperatorType.Or);
+                return new ConditionModel
+                {
+                    Left = previousCondition,
+                    Value = op,
+                    Right = nextCondition
+                };
+            }
+            else
+            {
+                return previousCondition;
+            }
+        }
+
         private ValueModel ParseValue()
         {
             if (Current.Type == TokenType.StringLiteral)
@@ -233,6 +308,47 @@ namespace MinDb.Compiler
             DiscardToken();
 
             return valueModel;
+        }
+
+        private OperatorModel ParseOperator()
+        {
+            var type = OperatorType.Unknown;
+            switch (Current.Type)
+            {
+                case TokenType.Equal:
+                    type = OperatorType.Equal;
+                    break;
+                case TokenType.NotEqual:
+                    type = OperatorType.NotEqual;
+                    break;
+                case TokenType.LessThan:
+                    type = OperatorType.LessThan;
+                    break;
+                case TokenType.LessThanOrEqual:
+                    type = OperatorType.LessThanOrEqual;
+                    break;
+                case TokenType.GreaterThan:
+                    type = OperatorType.GreaterThan;
+                    break;
+                case TokenType.GreaterThanOrEqual:
+                    type = OperatorType.GreaterThanOrEqual;
+                    break;
+                default:
+                    UnexpectedToken(
+                        TokenType.Equal,
+                        TokenType.NotEqual,
+                        TokenType.LessThan, 
+                        TokenType.LessThanOrEqual,
+                        TokenType.GreaterThan, 
+                        TokenType.GreaterThanOrEqual
+                    );
+                    break;
+            }
+
+            var operatorModel = new OperatorModel(type);
+            DiscardToken();
+
+            return operatorModel;
         }
 
         private ValueModel ParseInteger()

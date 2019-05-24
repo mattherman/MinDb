@@ -1,6 +1,6 @@
 namespace MinDb.Compiler.Models
 {
-    internal class ObjectModel
+    internal class ObjectModel : IConditionNode
     {
         public string Name { get; }
 

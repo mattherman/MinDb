@@ -12,6 +12,8 @@ namespace MinDb.Compiler.Models
             set { _targetColumns = value; }
         }
 
+        public ConditionModel Condition { get; set; }
+
         public override string ToString()
         {
             return $"SELECT | Table = {TargetTable.Name}, Columns = [{string.Join(",", TargetColumns.Select(c => c.Name))}]";
